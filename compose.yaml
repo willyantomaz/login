@@ -1,4 +1,16 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: 'Dockerfile'
+    ports:
+      - '3000:3000'
+    depends_on:
+       mysql:
+          condition: 'service_healthy'
+    networks:
+        - backend
+
   mysql:
     image: 'mysql:latest'
     environment:
@@ -6,5 +18,20 @@ services:
       - 'MYSQL_PASSWORD=password'
       - 'MYSQL_ROOT_PASSWORD=secretpassword'
       - 'MYSQL_USER=user'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      retries: 10
+      interval: '3s'
+      timeout: '30s'
     ports:
       - '3306:3306'
+    networks:
+      - backend
+
+networks:
+  backend:
+     name: backend
+
+
+
+

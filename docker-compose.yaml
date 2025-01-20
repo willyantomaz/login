@@ -5,6 +5,10 @@ services:
       dockerfile: 'Dockerfile'
     ports:
       - '3000:3000'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/login
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
     depends_on:
        mysql:
           condition: 'service_healthy'
@@ -23,10 +27,15 @@ services:
       retries: 10
       interval: '3s'
       timeout: '30s'
+    volumes:
+        - 'mysql_data:/var/lib/mysql'
     ports:
       - '3306:3306'
     networks:
       - backend
+
+volumes:
+  mysql_data:
 
 networks:
   backend:
